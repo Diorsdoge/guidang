@@ -1,0 +1,116 @@
+﻿<html>
+<!DOCTYPE html>
+    <head>  
+        <title>项目归档查询系统</title>
+        <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet"/>
+        <link href="{{ STATIC_URL }}css/bootstrap-theme.css" rel="stylesheet"/>
+    </head>
+<body onkeydown="if (event.keyCode==13) {document.getElementById('enter').click();}">
+       
+    {% if errors %}
+        <ul>
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+<nav class="navbar navbar-default " role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header row">
+    <a class="navbar-brand">项目档案查询系统</a>
+  </div>
+  <!-- Collect the nav links, forms, and other content for toggling -->
+    <form class="navbar-form navbar-left" action="/search/" method="get">
+     
+
+      <ul class="nav navbar-nav">
+      <div class="col-xs-3">
+      <li><a class="navbar-brand">选择年份： 
+                   <select name="p">
+                            <option value="buxian">不限</option>
+                            {% for ri in riqi %}
+                            <option value="{{ ri.id }}">{{ ri.gd_year }}</option>
+                            {% endfor %}
+                        </select></a>
+      </li>    
+      </div>
+      <div class="col-xs-5">
+        <li><a class="navbar-brand">选择部门：
+                        <select name="b">
+                            <option value="buxian">不限</option>
+                            {% for bu in bumen %}
+                            <option value="{{ bu.id }}">{{ bu.dep_name }}</option>
+                            {% endfor %}
+                            </select>
+                            </a>
+        </li>
+        </div>
+        <div class="col-xs-4 input-group">
+          <li>
+        <input type="text" name="q" class="form-control input-lg" placeholder="输入项目关键字(不限请不填)">
+
+      <span class="input-group-btn">
+      <button type="submit" id="enter" class="btn btn-success btn-lg"><i class="glyphicon glyphicon-search"  onclick= "javascript:findTenant()"></i>查询</button> 
+      </span>
+      </li>
+      </div>
+    </form></ul> 
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+<div class="container">
+    
+    {% if dangan %}
+    <div class="alert alert-success ">
+    <p><strong>查找成功，本页显示{{ dangan|length }}个相关归档</strong></p>  </div>
+    <table border="1">
+
+<div class="panel-group" id="accordion">
+{% for da in dangan %}
+ <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#{{ da.id }}">
+          {{ forloop.counter}} .{{ da.gd_name }}
+        </a>
+      </h4>
+    </div>
+	{% if forloop.first %}
+		<div id="{{ da.id }}" class="panel-collapse collapse in">
+	{% else %}
+		<div id="{{ da.id }}" class="panel-collapse collapse">
+	{% endif %}  
+      <div class="panel-body">
+        归档日期：{{ da.gd_time }} <br \>
+		    归档部门：{{ da.gd_department }}<br \>
+		    归档描述：{{ da.gd_depict }}<br \>
+		    合同编号：{{ da.gd_hetong }}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+ {% else %}
+    <div class="alert alert-warning ">
+    <strong>提示</strong> <p>没有这个项目</p>
+    </div>
+    {% endif %}
+    <div class="pagination">
+    <span class="step-links">
+        {% if dangan.has_previous %}
+            <a href="?page={{ dangan.previous_page_number }}&b={{ b }}&p={{ p }}&q={{ q }}">上一页</a>
+        {% endif %}
+        <span class="current">
+            共{{ dangan.paginator.num_pages }}页中的第{{ dangan.number }}页 .
+        </span>
+        {% if dangan.has_next %}
+            <a href="?page={{ dangan.next_page_number }}&b={{ b }}&p={{ p }}&q={{ q }}">下一页</a>
+        {% endif %}
+    </span>
+  </div>
+</div>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/bootstrap.js"></script>
+</body>
+</html>
+  
